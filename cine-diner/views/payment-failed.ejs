@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0a0a12">
+  <title>Paiement échoué — Soirée Ciné-Dîner</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;1,400;1,600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <div class="result-page">
+    <div class="result-card animate-in">
+      <span class="result-card__icon">😔</span>
+      <h1 class="result-card__title">Paiement annulé</h1>
+      <p class="result-card__message">
+        Votre paiement a été annulé ou n'a pas abouti.
+        <br>Aucun montant n'a été débité de votre compte.
+        <br><br>
+        Vous pouvez réessayer quand vous le souhaitez.
+      </p>
+
+      <div style="display: flex; flex-direction: column; gap: var(--space-md); align-items: center;">
+        <a href="/inscription" class="btn btn--primary">Réessayer l'inscription</a>
+        <a href="/" class="btn btn--secondary btn--small">← Retour à l'accueil</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,31 @@
+{
+  "name": "cine-diner",
+  "version": "1.0.0",
+  "description": "Système d'inscription et paiement — Soirée Ciné-Dîner La vie est belle",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "npx nodemon server.js",
+    "generate-qr": "node services/qrcode.js"
+  },
+  "dependencies": {
+    "@mollie/api-client": "^3.7.0",
+    "better-sqlite3": "^11.0.0",
+    "csv-stringify": "^6.5.0",
+    "dotenv": "^16.4.0",
+    "ejs": "^3.1.10",
+    "express": "^4.21.0",
+    "express-rate-limit": "^7.4.0",
+    "express-session": "^1.18.0",
+    "helmet": "^8.0.0",
+    "nodemailer": "^6.9.0",
+    "qrcode": "^1.5.4",
+    "uuid": "^10.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
+  },
+  "allowScripts": {
+    "better-sqlite3@11.10.0": true
+  }
+}

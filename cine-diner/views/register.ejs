@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Inscription — Soirée Ciné-Dîner La vie est belle. Remplissez le formulaire et réservez vos places.">
+  <meta name="theme-color" content="#0a0a12">
+  <title>Inscription — Soirée Ciné-Dîner</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;1,400;1,600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <section class="form-section">
+    <div class="form-container animate-in">
+
+      <div class="form-header">
+        <a href="/" style="color: var(--color-gold); font-size: 0.8rem; text-decoration: none; display: inline-block; margin-bottom: var(--space-md);">← Retour à l'accueil</a>
+        <h1>Inscription</h1>
+        <p>Soirée Ciné-Dîner · 26 septembre · 50€/pers.</p>
+
+        <% if (placesRemaining <= 10) { %>
+          <div class="places-badge warning" style="margin-top: var(--space-md);">
+            ⚠️ Plus que <%= placesRemaining %> place<%= placesRemaining > 1 ? 's' : '' %> !
+          </div>
+        <% } %>
+      </div>
+
+      <% if (error) { %>
+        <div class="form-error" id="form-error">
+          <%= error %>
+        </div>
+      <% } %>
+
+      <form action="/payment/create" method="POST" id="registration-form">
+
+        <!-- Nom & Prénom -->
+        <div class="form-row">
+          <div class="form-group">
+            <label for="nom">Nom <span class="required">*</span></label>
+            <input type="text" id="nom" name="nom" required placeholder="Votre nom" autocomplete="family-name">
+          </div>
+          <div class="form-group">
+            <label for="prenom">Prénom <span class="required">*</span></label>
+            <input type="text" id="prenom" name="prenom" required placeholder="Votre prénom" autocomplete="given-name">
+          </div>
+        </div>
+
+        <!-- Email -->
+        <div class="form-group">
+          <label for="email">Email <span class="required">*</span></label>
+          <input type="email" id="email" name="email" required placeholder="votre@email.com" autocomplete="email">
+        </div>
+
+        <!-- Téléphone -->
+        <div class="form-group">
+          <label for="telephone">Téléphone <span class="required">*</span></label>
+          <input type="tel" id="telephone" name="telephone" required placeholder="+32 4XX XX XX XX" autocomplete="tel">
+        </div>
+
+        <!-- Nombre de places -->
+        <div class="form-group">
+          <label for="nombre_places">Nombre de places <span class="required">*</span></label>
+          <select id="nombre_places" name="nombre_places" required>
+            <% const maxSelect = Math.min(10, placesRemaining); %>
+            <% for (let i = 1; i <= maxSelect; i++) { %>
+              <option value="<%= i %>"><%= i %> place<%= i > 1 ? 's' : '' %> — <%= i * pricePerPerson %>€</option>
+            <% } %>
+          </select>
+        </div>
+
+        <!-- Régime alimentaire -->
+        <div class="form-group">
+          <label for="regime_alimentaire">Régime alimentaire / allergies</label>
+          <textarea id="regime_alimentaire" name="regime_alimentaire" 
+            placeholder="Végétarien, sans gluten, allergie aux noix... (optionnel)"
+            rows="3"></textarea>
+        </div>
+
+        <!-- Prix total dynamique -->
+        <div class="price-summary" id="price-summary">
+          <div class="price-summary__label">Total à payer</div>
+          <div class="price-summary__amount" id="total-amount"><%= pricePerPerson %>€</div>
+          <div class="price-summary__detail" id="total-detail">1 place × <%= pricePerPerson %>€</div>
+        </div>
+
+        <!-- Conditions -->
+        <div class="form-group">
+          <div class="checkbox-group">
+            <input type="checkbox" id="conditions" name="conditions" value="1" required>
+            <label for="conditions">
+              J'accepte les conditions d'annulation : les places ne sont ni remboursables ni échangeables, 
+              sauf en cas d'annulation de l'événement. <span class="required">*</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Submit -->
+        <button type="submit" class="btn btn--primary btn--full" id="btn-submit">
+          Procéder au paiement
+        </button>
+
+        <p style="text-align: center; margin-top: var(--space-md); font-size: 0.75rem; color: var(--color-text-muted);">
+          🔒 Paiement sécurisé via Mollie (Bancontact / Carte bancaire)
+        </p>
+
+      </form>
+    </div>
+  </section>
+
+  <script src="/js/main.js"></script>
+  <script>
+    // Dynamic price calculation
+    const pricePerPerson = <%= pricePerPerson %>;
+    const selectPlaces = document.getElementById('nombre_places');
+    const totalAmount = document.getElementById('total-amount');
+    const totalDetail = document.getElementById('total-detail');
+
+    selectPlaces.addEventListener('change', function() {
+      const nb = parseInt(this.value);
+      const total = nb * pricePerPerson;
+      totalAmount.textContent = total + '€';
+      totalDetail.textContent = nb + ' place' + (nb > 1 ? 's' : '') + ' × ' + pricePerPerson + '€';
+    });
+
+    // Prevent double-submit
+    const form = document.getElementById('registration-form');
+    const btnSubmit = document.getElementById('btn-submit');
+
+    form.addEventListener('submit', function() {
+      btnSubmit.disabled = true;
+      btnSubmit.classList.add('btn--loading');
+      btnSubmit.innerHTML = '<span class="spinner"></span> Redirection vers le paiement...';
+    });
+  </script>
+</body>
+</html>

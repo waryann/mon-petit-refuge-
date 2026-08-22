@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0a0a12">
+  <title>Admin — Connexion</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <div class="admin-login">
+    <div class="admin-login__card animate-in">
+      <h1>🔐 Administration</h1>
+      <p style="color: var(--color-text-secondary); font-size: 0.85rem; margin-bottom: var(--space-xl);">
+        Soirée Ciné-Dîner — Tableau de bord
+      </p>
+
+      <% if (error) { %>
+        <div class="form-error"><%= error %></div>
+      <% } %>
+
+      <form action="/admin/login" method="POST">
+        <div class="form-group">
+          <label for="password">Mot de passe</label>
+          <input type="password" id="password" name="password" required placeholder="Mot de passe admin" autofocus>
+        </div>
+
+        <button type="submit" class="btn btn--primary btn--full">Se connecter</button>
+      </form>
+
+      <p style="text-align: center; margin-top: var(--space-xl);">
+        <a href="/" style="font-size: 0.8rem;">← Retour au site</a>
+      </p>
+    </div>
+  </div>
+
+</body>
+</html>

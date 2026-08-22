@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0a0a12">
+  <title>Admin — Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <div class="admin-page">
+    <div class="container">
+
+      <!-- Header -->
+      <div class="admin-header">
+        <h1>📋 Tableau de bord</h1>
+        <div class="admin-header__actions">
+          <a href="/admin/export/csv" class="btn btn--secondary btn--small">📥 Export CSV</a>
+          <a href="/" class="btn btn--secondary btn--small" target="_blank">🌐 Voir le site</a>
+          <a href="/admin/logout" class="btn btn--secondary btn--small">🚪 Déconnexion</a>
+        </div>
+      </div>
+
+      <!-- Stats -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-card__value"><%= stats.totalRegistrations %></div>
+          <div class="stat-card__label">Inscriptions</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card__value"><%= stats.totalPlaces %> / <%= stats.maxPlaces %></div>
+          <div class="stat-card__label">Places vendues</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card__value"><%= stats.placesRemaining %></div>
+          <div class="stat-card__label">Places restantes</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card__value"><%= stats.totalRevenue %>€</div>
+          <div class="stat-card__label">Recettes</div>
+        </div>
+      </div>
+
+      <% if (stats.pendingCount > 0) { %>
+        <div class="form-error" style="background: rgba(243, 156, 18, 0.1); border-color: rgba(243, 156, 18, 0.3); color: var(--color-warning);">
+          ⚠️ <%= stats.pendingCount %> paiement(s) en attente
+        </div>
+      <% } %>
+
+      <!-- Filter -->
+      <div class="filter-bar">
+        <label for="status-filter">Filtrer par statut :</label>
+        <select id="status-filter" onchange="window.location.href='/admin/dashboard?status=' + this.value">
+          <option value="all" <%= statusFilter === 'all' ? 'selected' : '' %>>Tous</option>
+          <option value="paid" <%= statusFilter === 'paid' ? 'selected' : '' %>>✅ Payé</option>
+          <option value="pending" <%= statusFilter === 'pending' ? 'selected' : '' %>>⏳ En attente</option>
+          <option value="failed" <%= statusFilter === 'failed' ? 'selected' : '' %>>❌ Échoué</option>
+        </select>
+      </div>
+
+      <!-- Table -->
+      <% if (registrations.length > 0) { %>
+        <div class="table-wrapper">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Nom</th>
+                <th>Prénom</th>
+                <th>Email</th>
+                <th>Téléphone</th>
+                <th>Places</th>
+                <th>Montant</th>
+                <th>Régime</th>
+                <th>Statut</th>
+                <th>Code</th>
+                <th>Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% registrations.forEach((r, i) => { %>
+                <tr>
+                  <td><%= i + 1 %></td>
+                  <td style="color: var(--color-cream); font-weight: 600;"><%= r.nom %></td>
+                  <td style="color: var(--color-cream);"><%= r.prenom %></td>
+                  <td><a href="mailto:<%= r.email %>" style="color: var(--color-gold);"><%= r.email %></a></td>
+                  <td><%= r.telephone %></td>
+                  <td style="text-align: center; font-weight: 700; color: var(--color-cream);"><%= r.nombre_places %></td>
+                  <td style="font-weight: 600; color: var(--color-cream);"><%= r.total_amount %>€</td>
+                  <td><%= r.regime_alimentaire || '—' %></td>
+                  <td>
+                    <span class="status-badge <%= r.payment_status %>">
+                      <%= r.payment_status === 'paid' ? '✅ Payé' : r.payment_status === 'pending' ? '⏳ Attente' : '❌ Échoué' %>
+                    </span>
+                  </td>
+                  <td style="font-family: monospace; font-size: 0.75rem; color: var(--color-gold);"><%= r.confirmation_code %></td>
+                  <td style="font-size: 0.75rem;"><%= new Date(r.created_at).toLocaleDateString('fr-BE', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }) %></td>
+                </tr>
+              <% }); %>
+            </tbody>
+          </table>
+        </div>
+      <% } else { %>
+        <div class="empty-state">
+          <div class="empty-state__icon">📭</div>
+          <p>Aucune inscription<%= statusFilter !== 'all' ? ' avec ce statut' : '' %> pour le moment.</p>
+        </div>
+      <% } %>
+
+    </div>
+  </div>
+
+</body>
+</html>

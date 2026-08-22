@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Confirmation de votre inscription — Soirée Ciné-Dîner">
+  <meta name="theme-color" content="#0a0a12">
+  <title>Confirmation — Soirée Ciné-Dîner</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;1,400;1,600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <div class="result-page">
+    <div class="result-card animate-in">
+
+      <% if (registration.payment_status === 'paid') { %>
+
+        <span class="result-card__icon">🎉</span>
+        <h1 class="result-card__title">Inscription confirmée !</h1>
+        <p class="result-card__message">
+          Merci <strong><%= registration.prenom %></strong> ! Votre inscription à la Soirée Ciné-Dîner est confirmée.
+          <br>Un email de confirmation avec votre billet QR code a été envoyé à <strong><%= registration.email %></strong>.
+        </p>
+
+        <!-- Confirmation Code -->
+        <div class="confirmation-code"><%= registration.confirmation_code %></div>
+
+        <!-- QR Code Ticket -->
+        <% if (registration.qr_code_data) { %>
+          <div class="result-card__qr">
+            <img src="<%= registration.qr_code_data %>" alt="QR Code — Billet d'entrée">
+            <p class="result-card__qr-label">Présentez ce QR code à l'entrée</p>
+          </div>
+        <% } %>
+
+        <!-- Recap -->
+        <div class="result-card__details">
+          <dl>
+            <dt>Événement</dt>
+            <dd>Soirée Ciné-Dîner — La vie est belle</dd>
+
+            <dt>Date & Horaire</dt>
+            <dd>Samedi 26 septembre · 18h00 – 22h00</dd>
+
+            <dt>Lieu</dt>
+            <dd>Brusselbaan 140, 1600 Sint-Pieters-Leeuw</dd>
+
+            <dt>Nom</dt>
+            <dd><%= registration.prenom %> <%= registration.nom %></dd>
+
+            <dt>Nombre de places</dt>
+            <dd><%= registration.nombre_places %> place<%= registration.nombre_places > 1 ? 's' : '' %></dd>
+
+            <dt>Montant payé</dt>
+            <dd><%= registration.total_amount %>€</dd>
+          </dl>
+        </div>
+
+        <a href="/" class="btn btn--secondary">← Retour à l'accueil</a>
+
+      <% } else if (registration.payment_status === 'pending') { %>
+
+        <span class="result-card__icon">⏳</span>
+        <h1 class="result-card__title">Paiement en cours...</h1>
+        <p class="result-card__message">
+          Votre paiement est en cours de traitement. Vous recevrez un email de confirmation dès que le paiement sera validé.
+          <br><br>
+          Si vous ne recevez rien dans les 15 minutes, contactez-nous à
+          <a href="mailto:monpetitrefuge@gmail.com">monpetitrefuge@gmail.com</a>.
+        </p>
+
+        <a href="/payment/success?id=<%= registration.id %>" class="btn btn--secondary">
+          🔄 Rafraîchir le statut
+        </a>
+
+      <% } else { %>
+
+        <span class="result-card__icon">❌</span>
+        <h1 class="result-card__title">Paiement échoué</h1>
+        <p class="result-card__message">
+          Le paiement n'a pas pu être traité. Aucun montant n'a été débité.
+        </p>
+
+        <a href="/inscription" class="btn btn--primary">Réessayer l'inscription</a>
+
+      <% } %>
+
+    </div>
+  </div>
+
+  <script src="/js/main.js"></script>
+</body>
+</html>

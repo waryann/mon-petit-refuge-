@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Soirée Ciné-Dîner — Projection du film 'La vie est belle' suivie d'un repas solidaire. Samedi 26 septembre, 18h-22h à Sint-Pieters-Leeuw. Réservez vos places en ligne !">
+  <meta name="theme-color" content="#0a0a12">
+  <title>Soirée Ciné-Dîner — La vie est belle</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;1,400;1,600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <!-- ===== HERO SECTION ===== -->
+  <section class="hero" id="hero">
+    <div class="hero__background">
+      <img src="/images/hero-bg.png" alt="Soirée Ciné-Dîner ambiance" loading="eager" data-speed="auto">
+    </div>
+    <div id="tsparticles"></div>
+    <div class="hero__overlay"></div>
+
+    <div class="hero__content">
+      <span class="hero__badge gsap-hero-reveal">🎬 Événement exclusif</span>
+
+      <h1 class="hero__title gsap-hero-title">Soirée Ciné-Dîner</h1>
+      <p class="hero__subtitle gsap-hero-reveal">« La vie est belle »</p>
+
+      <p class="hero__date gsap-hero-reveal">
+        <strong>Samedi 26 septembre</strong> · 18h00 – 22h00
+      </p>
+
+      <% if (soldOut) { %>
+        <div class="places-badge sold-out gsap-hero-reveal">Complet — Plus de places disponibles</div>
+      <% } else { %>
+        <a href="/inscription" class="btn btn--primary gsap-hero-reveal" id="cta-register">
+          S'inscrire et payer — 50€/pers.
+        </a>
+      <% } %>
+    </div>
+  </section>
+
+  <!-- ===== EVENT INFO ===== -->
+  <section class="info-section" id="infos">
+    <div class="container">
+      <h2 class="section-title gsap-section-title">Les détails de la <span>soirée</span></h2>
+
+      <div class="info-grid">
+        <div class="info-card gsap-card">
+          <span class="info-card__icon">📅</span>
+          <div class="info-card__label">Date & Horaire</div>
+          <div class="info-card__value">Samedi 26 septembre</div>
+          <div class="info-card__detail">18h00 – 22h00</div>
+        </div>
+
+        <div class="info-card gsap-card">
+          <span class="info-card__icon">📍</span>
+          <div class="info-card__label">Lieu</div>
+          <div class="info-card__value">Brusselbaan 140</div>
+          <div class="info-card__detail">1600 Sint-Pieters-Leeuw</div>
+        </div>
+
+        <div class="info-card gsap-card">
+          <span class="info-card__icon">🎬</span>
+          <div class="info-card__label">Film projeté</div>
+          <div class="info-card__value">La vie est belle</div>
+          <div class="info-card__detail">Film de Roberto Benigni</div>
+        </div>
+
+        <div class="info-card gsap-card">
+          <span class="info-card__icon">⭐</span>
+          <div class="info-card__label">Invitée d'honneur</div>
+          <div class="info-card__value">Nsona Mvuemba</div>
+          <div class="info-card__detail">Petite-fille de Papa Wemba</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== DESCRIPTION ===== -->
+  <section class="description-section" id="description">
+    <div class="container">
+      <div class="description-card gsap-card">
+        <p>
+          Rejoignez-nous pour une soirée unique mêlant <strong>cinéma et gastronomie</strong>.
+          Assistez à la projection du magnifique film <em>« La vie est belle »</em>,
+          suivie d'un <strong>repas solidaire</strong> dans une ambiance chaleureuse et conviviale.
+        </p>
+        <p>
+          Nous aurons l'honneur d'accueillir <strong>Nsona Mvuemba</strong>, petite-fille du légendaire
+          <strong>Papa Wemba</strong>, en tant qu'invitée d'honneur de cette soirée exceptionnelle.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== PRICE & CTA ===== -->
+  <section class="price-section" id="prix">
+    <div class="container">
+      <h2 class="section-title gsap-section-title">Réservez vos <span>places</span></h2>
+
+      <div class="price-card gsap-card">
+        <% if (placesRemaining > 20) { %>
+          <div class="places-badge"><%= placesRemaining %> places disponibles</div>
+        <% } else if (placesRemaining > 0) { %>
+          <div class="places-badge warning">⚠️ Plus que <%= placesRemaining %> places !</div>
+        <% } else { %>
+          <div class="places-badge sold-out">Complet</div>
+        <% } %>
+
+        <div class="price-amount">50<span>€</span></div>
+        <div class="price-label">par personne</div>
+
+        <ul class="price-includes">
+          <li>Projection du film « La vie est belle »</li>
+          <li>Repas solidaire complet</li>
+          <li>Rencontre avec Nsona Mvuemba</li>
+          <li>Billet de confirmation avec QR code</li>
+        </ul>
+
+        <% if (!soldOut) { %>
+          <a href="/inscription" class="btn btn--primary btn--full" id="cta-register-bottom">
+            S'inscrire maintenant
+          </a>
+        <% } else { %>
+          <button class="btn btn--secondary btn--full" disabled>Complet</button>
+        <% } %>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer" id="contact">
+    <div class="container">
+      <div class="footer__contact">
+        <a href="mailto:monpetitrefuge@gmail.com">📧 monpetitrefuge@gmail.com</a>
+      </div>
+      <p class="footer__copy">
+        © 2026 Soirée Ciné-Dîner · La vie est belle · Tous droits réservés
+      </p>
+    </div>
+  </footer>
+
+  <% if (typeof errorMessage !== 'undefined' && errorMessage) { %>
+    <script>alert('<%= errorMessage %>');</script>
+  <% } %>
+
+  <script src="/js/main.js"></script>
+</body>
+</html>
