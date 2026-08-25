@@ -19,7 +19,7 @@
       <div class="form-header">
         <a href="/" style="color: var(--color-gold); font-size: 0.8rem; text-decoration: none; display: inline-block; margin-bottom: var(--space-md);">← Retour à l'accueil</a>
         <h1>Inscription</h1>
-        <p>Soirée Ciné-Dîner · 26 septembre · 50€/pers.</p>
+        <p>Soirée Ciné-Dîner · 26 septembre · <%= pricePerPerson %>€/pers.</p>
 
         <% if (placesRemaining <= 10) { %>
           <div class="places-badge warning" style="margin-top: var(--space-md);">
@@ -35,6 +35,7 @@
       <% } %>
 
       <form action="/payment/create" method="POST" id="registration-form">
+        <input type="hidden" name="ticket_type" value="<%= pricePerPerson %>">
 
         <!-- Nom & Prénom -->
         <div class="form-row">
@@ -60,24 +61,14 @@
           <input type="tel" id="telephone" name="telephone" required placeholder="+32 4XX XX XX XX" autocomplete="tel">
         </div>
 
-        <!-- Nombre de places -->
-        <div class="form-group">
-          <label for="nombre_places">Nombre de places <span class="required">*</span></label>
-          <select id="nombre_places" name="nombre_places" required>
-            <% const maxSelect = Math.min(10, placesRemaining); %>
-            <% for (let i = 1; i <= maxSelect; i++) { %>
-              <option value="<%= i %>"><%= i %> place<%= i > 1 ? 's' : '' %> — <%= i * pricePerPerson %>€</option>
-            <% } %>
-          </select>
+                <!-- Nombre de places (1 par défaut) -->
+        <input type="hidden" id="nombre_places" name="nombre_places" value="1">
+        <div class="form-group" style="display: none;">
+          <label>Nombre de places</label>
+          <input type="text" value="1 place" disabled>
         </div>
 
-        <!-- Régime alimentaire -->
-        <div class="form-group">
-          <label for="regime_alimentaire">Régime alimentaire / allergies</label>
-          <textarea id="regime_alimentaire" name="regime_alimentaire" 
-            placeholder="Végétarien, sans gluten, allergie aux noix... (optionnel)"
-            rows="3"></textarea>
-        </div>
+        
 
         <!-- Prix total dynamique -->
         <div class="price-summary" id="price-summary">
@@ -103,7 +94,7 @@
         </button>
 
         <p style="text-align: center; margin-top: var(--space-md); font-size: 0.75rem; color: var(--color-text-muted);">
-          🔒 Paiement sécurisé via Mollie (Bancontact / Carte bancaire)
+          🔒 Paiement manuel via lien sécurisé Revolut
         </p>
 
       </form>
