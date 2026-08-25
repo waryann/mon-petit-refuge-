@@ -3,8 +3,8 @@ const router = express.Router();
 const { getPlacesRemaining } = require('../database');
 
 // Landing page
-router.get('/', (req, res) => {
-  const placesRemaining = getPlacesRemaining();
+router.get('/', async (req, res) => {
+  const placesRemaining = await getPlacesRemaining();
   const maxPlaces = parseInt(process.env.MAX_PLACES) || 80;
 
   res.render('landing', {
@@ -15,9 +15,9 @@ router.get('/', (req, res) => {
 });
 
 // Registration form
-router.get('/inscription', (req, res) => {
+router.get('/inscription', async (req, res) => {
   const ticketType = req.query.type === '25' ? 25 : 50;
-  const placesRemaining = getPlacesRemaining();
+  const placesRemaining = await getPlacesRemaining();
 
   if (placesRemaining <= 0) {
     return res.render('landing', {
