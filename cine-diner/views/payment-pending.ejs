@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Paiement en attente — Soirée Ciné-Dîner</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body style="background: var(--bg-dark); color: var(--text-light); text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 20px;">
+  
+  <div class="gsap-card" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(232, 213, 181, 0.2); padding: 40px; border-radius: 12px; max-width: 500px;">
+    <h1 style="color: var(--accent-gold); font-family: var(--font-heading); margin-bottom: 20px;">Dernière étape : Le Paiement !</h1>
+    
+    <p style="margin-bottom: 20px; font-size: 1.1rem; line-height: 1.6;">
+      Merci <strong><%= registration.prenom %></strong> ! Votre inscription a bien été pré-enregistrée.
+    </p>
+    
+    <p style="margin-bottom: 30px;">
+      Pour valider définitivement votre place et recevoir votre QR Code d'entrée, veuillez procéder au paiement de <strong><%= registration.total_amount %>€</strong> via Revolut :
+    </p>
+
+    <a href="<%= registration.ticket_type == 25 ? link25 : link50 %>" class="btn btn--primary" style="display: inline-block; margin-bottom: 20px; font-size: 1.2rem; padding: 15px 30px;" target="_blank">
+      Payer <%= registration.total_amount %>€ avec Revolut
+    </a>
+
+    <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.5; margin-top: 20px;">
+      <em>Une fois le paiement effectué sur Revolut, notre équipe le validera manuellement. Vous recevrez ensuite un e-mail avec votre QR code d'accès !</em><br>
+      (Vous pouvez fermer cette page après avoir payé).
+    </p>
+  </div>
+
+</body>
+</html>
