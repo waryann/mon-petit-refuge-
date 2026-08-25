@@ -42,10 +42,10 @@ router.get('/logout', (req, res) => {
 });
 
 // Dashboard
-router.get('/dashboard', requireAdmin, (req, res) => {
+router.get('/dashboard', requireAdmin, async (req, res) => {
   const statusFilter = req.query.status || 'all';
-  const registrations = getAllRegistrations(statusFilter);
-  const stats = getStats();
+  const registrations = await getAllRegistrations(statusFilter);
+  const stats = await getStats();
 
   res.render('admin/dashboard', {
     registrations,
@@ -55,8 +55,8 @@ router.get('/dashboard', requireAdmin, (req, res) => {
 });
 
 // Verify a ticket (scan QR code at entrance)
-router.get('/verify/:code', requireAdmin, (req, res) => {
-  const registration = getRegistrationByConfirmationCode(req.params.code);
+router.get('/verify/:code', requireAdmin, async (req, res) => {
+  const registration = await getRegistrationByConfirmationCode(req.params.code);
 
   res.json({
     valid: !!(registration && registration.payment_status === 'paid'),
@@ -71,8 +71,8 @@ router.get('/verify/:code', requireAdmin, (req, res) => {
 });
 
 // Export CSV
-router.get('/export/csv', requireAdmin, (req, res) => {
-  const registrations = getAllRegistrations('paid');
+router.get('/export/csv', requireAdmin, async (req, res) => {
+  const registrations = await getAllRegistrations('paid');
 
   const csvData = registrations.map(r => ({
     'Nom': r.nom,
@@ -105,15 +105,15 @@ router.post('/validate/:id', requireAdmin, async (req, res) => {
     const { sendConfirmationEmail } = require('../services/email');
     
     const registrationId = req.params.id;
-    const registration = getRegistrationById(registrationId);
+    const registration = await getRegistrationById(registrationId);
     
     if (registration && registration.payment_status === 'pending') {
-      updatePaymentStatusById(registration.id, 'paid');
+      await updatePaymentStatusById(registration.id, 'paid');
       registration.payment_status = 'paid';
       
       if (!registration.qr_code_data) {
         const qrCodeDataUrl = await generateTicketQR(registration.confirmation_code, registration);
-        saveQrCodeData(registration.id, qrCodeDataUrl);
+        await saveQrCodeData(registration.id, qrCodeDataUrl);
         registration.qr_code_data = qrCodeDataUrl;
         
         await sendConfirmationEmail(registration, qrCodeDataUrl);
@@ -127,10 +127,10 @@ router.post('/validate/:id', requireAdmin, async (req, res) => {
 });
 
 // Delete a registration
-router.post('/delete/:id', requireAdmin, (req, res) => {
+router.post('/delete/:id', requireAdmin, async (req, res) => {
   const { deleteRegistration } = require('../database');
   try {
-    deleteRegistration(req.params.id);
+    await deleteRegistration(req.params.id);
   } catch(e) {
     console.error(e);
   }

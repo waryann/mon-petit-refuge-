@@ -33,7 +33,7 @@ router.post('/create', async (req, res) => {
     const confirmationCode = uuidv4().split('-')[0].toUpperCase();
 
     // Create registration (status defaults to 'pending')
-    const registrationId = createRegistration({
+    const registrationId = await createRegistration({
       nom: nom.trim(),
       prenom: prenom.trim(),
       email: email.trim().toLowerCase(),
@@ -56,11 +56,11 @@ router.post('/create', async (req, res) => {
 });
 
 // Pending payment page (Revolut Links)
-router.get('/pending', (req, res) => {
+router.get('/pending', async (req, res) => {
   const registrationId = req.query.id;
   if (!registrationId) return res.redirect('/');
 
-  const registration = getRegistrationById(registrationId);
+  const registration = await getRegistrationById(registrationId);
   if (!registration) return res.redirect('/');
   
   if (registration.payment_status === 'paid') {
@@ -87,7 +87,7 @@ router.get('/pending', (req, res) => {
 // Success page (called when admin validates)
 router.get('/success', (req, res) => {
   const registrationId = req.query.id;
-  const registration = getRegistrationById(registrationId);
+  const registration = await getRegistrationById(registrationId);
   if (!registration) return res.redirect('/');
   res.render('payment-success', { registration });
 });
