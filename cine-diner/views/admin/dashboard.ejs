@@ -78,12 +78,31 @@
       function checkTicket() {
         const code = document.getElementById('ticketCode').value.trim();
         const resultDiv = document.getElementById('ticketResult');
-        if(!code) return;
+        if(!code) {
+          resultDiv.style.display = 'block';
+          resultDiv.style.background = 'rgba(231, 76, 60, 0.2)';
+          resultDiv.style.color = '#e74c3c';
+          resultDiv.innerHTML = '⚠️ Veuillez entrer un code.';
+          return;
+        }
         
-        fetch('/admin/verify/' + code)
-          .then(res => res.json())
+        resultDiv.style.display = 'block';
+        resultDiv.style.background = 'rgba(255, 255, 255, 0.1)';
+        resultDiv.style.color = '#fff';
+        resultDiv.innerHTML = '⏳ Vérification...';
+        
+        fetch('/admin/verify/' + code, { credentials: 'same-origin' })
+          .then(res => {
+            if (!res.ok) throw new Error('Network response was not ok');
+            // Check if we got redirected to login page (HTML instead of JSON)
+            const contentType = res.headers.get("content-type");
+            if (contentType && contentType.indexOf("application/json") !== -1) {
+              return res.json();
+            } else {
+              throw new Error('Non-JSON response, session probably expired');
+            }
+          })
           .then(data => {
-            resultDiv.style.display = 'block';
             if(data.registration) {
               const r = data.registration;
               if(r.payment_status === 'paid') {
@@ -101,7 +120,12 @@
               resultDiv.innerHTML = `❌ Billet introuvable ! Code invalide.`;
             }
           })
-          .catch(err => alert("Erreur de connexion."));
+          .catch(err => {
+            console.error(err);
+            resultDiv.style.background = 'rgba(231, 76, 60, 0.2)';
+            resultDiv.style.color = '#e74c3c';
+            resultDiv.innerHTML = `❌ Erreur de vérification. (Peut-être déconnecté ?)`;
+          });
       }
       </script>
 
