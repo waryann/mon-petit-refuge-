@@ -25,7 +25,7 @@ router.get('/login', (req, res) => {
 // Login handler
 router.post('/login', (req, res) => {
   const { password } = req.body;
-  const adminPassword = process.env.ADMIN_PASSWORD || 'admin2026';
+  const adminPassword = 'admin2026';
 
   if (password === adminPassword) {
     req.session.isAdmin = true;

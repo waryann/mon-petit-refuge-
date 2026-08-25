@@ -11,6 +11,7 @@ const paymentRoutes = require('./routes/payment');
 const adminRoutes = require('./routes/admin');
 
 const app = express();
+app.set('trust proxy', 1); // Trust Render proxy for secure cookies
 const PORT = process.env.PORT || 3000;
 
 // Security headers (relaxed for CDNs)
