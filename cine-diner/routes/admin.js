@@ -1,5 +1,11 @@
 const express = require('express');
 const router = express.Router();
+
+// Root admin route
+router.get('/', (req, res) => {
+  res.redirect('/admin/dashboard');
+});
+
 const { stringify } = require('csv-stringify/sync');
 const { getAllRegistrations, getStats, getRegistrationByConfirmationCode } = require('../database');
 
