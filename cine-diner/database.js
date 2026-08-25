@@ -186,6 +186,23 @@ function closeDb() {
   }
 }
 
+
+// Update payment status by ID
+function updatePaymentStatusById(id, status) {
+  const db = getDb();
+  db.prepare(`
+    UPDATE registrations 
+    SET payment_status = ?, updated_at = datetime('now')
+    WHERE id = ?
+  `).run(status, id);
+}
+
+// Delete registration
+function deleteRegistration(id) {
+  const db = getDb();
+  db.prepare('DELETE FROM registrations WHERE id = ?').run(id);
+}
+
 module.exports = {
   getDb,
   getPlacesSold,
@@ -193,6 +210,8 @@ module.exports = {
   createRegistration,
   updatePaymentInfo,
   updatePaymentStatus,
+  updatePaymentStatusById,
+  deleteRegistration,
   getRegistrationByPaymentId,
   getRegistrationById,
   getRegistrationByConfirmationCode,

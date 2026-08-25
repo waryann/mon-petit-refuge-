@@ -100,7 +100,7 @@ module.exports = router;
 // Validate a pending payment manually
 router.post('/validate/:id', requireAdmin, async (req, res) => {
   try {
-    const { updatePaymentStatus, getRegistrationById, saveQrCodeData } = require('../database');
+    const { updatePaymentStatusById, getRegistrationById, saveQrCodeData } = require('../database');
     const { generateTicketQR } = require('../services/qrcode');
     const { sendConfirmationEmail } = require('../services/email');
     
@@ -108,7 +108,7 @@ router.post('/validate/:id', requireAdmin, async (req, res) => {
     const registration = getRegistrationById(registrationId);
     
     if (registration && registration.payment_status === 'pending') {
-      updatePaymentStatus(registration.id, 'paid');
+      updatePaymentStatusById(registration.id, 'paid');
       registration.payment_status = 'paid';
       
       if (!registration.qr_code_data) {
@@ -124,4 +124,15 @@ router.post('/validate/:id', requireAdmin, async (req, res) => {
     console.error('Erreur validation manuelle:', error);
     res.redirect('/admin/dashboard');
   }
+});
+
+// Delete a registration
+router.post('/delete/:id', requireAdmin, (req, res) => {
+  const { deleteRegistration } = require('../database');
+  try {
+    deleteRegistration(req.params.id);
+  } catch(e) {
+    console.error(e);
+  }
+  res.redirect('/admin/dashboard');
 });

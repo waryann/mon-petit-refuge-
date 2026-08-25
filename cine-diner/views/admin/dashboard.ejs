@@ -62,6 +62,50 @@
         </select>
       </div>
 
+      
+      <!-- Vérificateur de billets -->
+      <div class="stats-card" style="margin-top: 20px; background: rgba(255,255,255,0.05); border: 1px solid var(--accent-gold); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px;">
+        <h3 style="color: var(--accent-gold); margin-bottom: 15px;">Vérificateur de billets à l'entrée</h3>
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">Entrez le code présent sur le billet ou scannez le QR code.</p>
+        <div style="display: flex; gap: 10px; width: 100%; max-width: 400px;">
+          <input type="text" id="ticketCode" placeholder="Ex: A7B2C" style="flex: 1; padding: 10px; border-radius: 4px; border: 1px solid #333; background: #222; color: white;">
+          <button onclick="checkTicket()" class="btn btn--primary">Vérifier</button>
+        </div>
+        <div id="ticketResult" style="margin-top: 15px; font-weight: bold; font-size: 1.1rem; padding: 10px; border-radius: 5px; width: 100%; max-width: 400px; text-align: center; display: none;"></div>
+      </div>
+      
+      <script>
+      function checkTicket() {
+        const code = document.getElementById('ticketCode').value.trim();
+        const resultDiv = document.getElementById('ticketResult');
+        if(!code) return;
+        
+        fetch('/admin/verify/' + code)
+          .then(res => res.json())
+          .then(data => {
+            resultDiv.style.display = 'block';
+            if(data.registration) {
+              const r = data.registration;
+              if(r.payment_status === 'paid') {
+                resultDiv.style.background = 'rgba(46, 204, 113, 0.2)';
+                resultDiv.style.color = '#2ecc71';
+                resultDiv.innerHTML = `✅ Billet valide !<br><small>${r.prenom} ${r.nom} (${r.nombre_places} place)</small>`;
+              } else {
+                resultDiv.style.background = 'rgba(241, 196, 15, 0.2)';
+                resultDiv.style.color = '#f1c40f';
+                resultDiv.innerHTML = `⚠️ Billet en attente de paiement !<br><small>${r.prenom} ${r.nom}</small>`;
+              }
+            } else {
+              resultDiv.style.background = 'rgba(231, 76, 60, 0.2)';
+              resultDiv.style.color = '#e74c3c';
+              resultDiv.innerHTML = `❌ Billet introuvable ! Code invalide.`;
+            }
+          })
+          .catch(err => alert("Erreur de connexion."));
+      }
+      </script>
+
+
       <!-- Table -->
       <% if (registrations.length > 0) { %>
         <div class="table-wrapper">
