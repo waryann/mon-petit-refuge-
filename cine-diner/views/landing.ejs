@@ -22,60 +22,26 @@
     <div class="hero__overlay"></div>
 
     <div class="hero__content">
-      <span class="hero__badge gsap-hero-reveal">🎬 Événement exclusif</span>
-
-      <h1 class="hero__title gsap-hero-title">Soirée Ciné-Dîner</h1>
-      <p class="hero__subtitle gsap-hero-reveal">« La vie est belle »</p>
-
-      <p class="hero__date gsap-hero-reveal">
-        <strong>Samedi 26 septembre</strong> · 18h00 – 22h00
-      </p>
-
-      <% if (soldOut) { %>
-        <div class="places-badge sold-out gsap-hero-reveal">Complet — Plus de places disponibles</div>
-      <% } else { %>
-        <a href="/inscription" class="btn btn--primary gsap-hero-reveal" id="cta-register">
-          S'inscrire et payer — 50€/pers.
-        </a>
-      <% } %>
-    </div>
-  </section>
-
-  <!-- ===== EVENT INFO ===== -->
-  <section class="info-section" id="infos">
-    <div class="container">
-      <h2 class="section-title gsap-section-title">Les détails de la <span>soirée</span></h2>
-
-      <div class="info-grid">
-        <div class="info-card gsap-card">
-          <span class="info-card__icon">📅</span>
-          <div class="info-card__label">Date & Horaire</div>
-          <div class="info-card__value">Samedi 26 septembre</div>
-          <div class="info-card__detail">18h00 – 22h00</div>
-        </div>
-
-        <div class="info-card gsap-card">
-          <span class="info-card__icon">📍</span>
-          <div class="info-card__label">Lieu</div>
-          <div class="info-card__value">Brusselbaan 140</div>
-          <div class="info-card__detail">1600 Sint-Pieters-Leeuw</div>
-        </div>
-
-        <div class="info-card gsap-card">
-          <span class="info-card__icon">🎬</span>
-          <div class="info-card__label">Film projeté</div>
-          <div class="info-card__value">La vie est belle</div>
-          <div class="info-card__detail">Film de Roberto Benigni</div>
-        </div>
-
-        <div class="info-card gsap-card">
-          <span class="info-card__icon">⭐</span>
-          <div class="info-card__label">Invitée d'honneur</div>
-          <div class="info-card__value">Nsona Mvuemba</div>
-          <div class="info-card__detail">Petite-fille de Papa Wemba</div>
-        </div>
+      <div class="hero__poster-container gsap-hero-reveal">
+        <img src="https://via.placeholder.com/300x450/111111/e8d5b5?text=Affiche+La+vie+est+belle" alt="Affiche La vie est belle" class="hero__poster">
+      </div>
+      <div class="hero__text-content">
+        <span class="hero__badge gsap-hero-reveal">🎬 Événement exclusif</span>
+        <h1 class="hero__title gsap-hero-title">Soirée Ciné-Dîner</h1>
+        <p class="hero__subtitle gsap-hero-reveal">« La vie est belle »</p>
+        <p class="hero__date gsap-hero-reveal">
+          <strong>Samedi 26 septembre</strong> · 18h00 – 22h00
+        </p>
+        <% if (soldOut) { %>
+          <div class="places-badge sold-out gsap-hero-reveal">Complet — Plus de places disponibles</div>
+        <% } else { %>
+          <a href="#prix" class="btn btn--primary gsap-hero-reveal" id="cta-register">
+            Voir les tarifs
+          </a>
+        <% } %>
       </div>
     </div>
+  </section>
   </section>
 
   <!-- ===== DESCRIPTION ===== -->
@@ -83,9 +49,9 @@
     <div class="container">
       <div class="description-card gsap-card">
         <p>
-          Rejoignez-nous pour une soirée unique mêlant <strong>cinéma et gastronomie</strong>.
-          Assistez à la projection du magnifique film <em>« La vie est belle »</em>,
-          suivie d'un <strong>repas solidaire</strong> dans une ambiance chaleureuse et conviviale.
+          L'ASBL <strong>Mon P'tit Refuge</strong> vous convie à une soirée unique mêlant <strong>cinéma et gastronomie</strong>.
+          Assistez à la projection du magnifique film <em>« La vie est belle »</em> dans une ambiance chaleureuse et conviviale,
+          et soutenez le projet de construction d'une maison de quartier à Maluku.
         </p>
         <p>
           Nous aurons l'honneur d'accueillir <strong>Nsona Mvuemba</strong>, petite-fille du légendaire
@@ -100,33 +66,47 @@
     <div class="container">
       <h2 class="section-title gsap-section-title">Réservez vos <span>places</span></h2>
 
-      <div class="price-card gsap-card">
-        <% if (placesRemaining > 20) { %>
-          <div class="places-badge"><%= placesRemaining %> places disponibles</div>
-        <% } else if (placesRemaining > 0) { %>
-          <div class="places-badge warning">⚠️ Plus que <%= placesRemaining %> places !</div>
-        <% } else { %>
-          <div class="places-badge sold-out">Complet</div>
-        <% } %>
+      <div class="pricing-grid">
+        <!-- Option 1: 25€ -->
+        <div class="price-card gsap-card">
+          <div class="price-amount">25<span>€</span></div>
+          <div class="price-label">par personne</div>
+          <h3 class="price-name">Formule Ciné</h3>
+          <ul class="price-includes">
+            <li>Projection du film « La vie est belle »</li>
+            <li>Soutien au projet de Maluku</li>
+            <li>Rencontre avec Nsona Mvuemba</li>
+            <li class="excluded">Repas non inclus</li>
+          </ul>
+          <% if (!soldOut) { %>
+            <a href="/inscription?type=25" class="btn btn--secondary btn--full">S'inscrire (25€)</a>
+          <% } else { %>
+            <button class="btn btn--secondary btn--full" disabled>Complet</button>
+          <% } %>
+        </div>
 
-        <div class="price-amount">50<span>€</span></div>
-        <div class="price-label">par personne</div>
-
-        <ul class="price-includes">
-          <li>Projection du film « La vie est belle »</li>
-          <li>Repas solidaire complet</li>
-          <li>Rencontre avec Nsona Mvuemba</li>
-          <li>Billet de confirmation avec QR code</li>
-        </ul>
-
-        <% if (!soldOut) { %>
-          <a href="/inscription" class="btn btn--primary btn--full" id="cta-register-bottom">
-            S'inscrire maintenant
-          </a>
-        <% } else { %>
-          <button class="btn btn--secondary btn--full" disabled>Complet</button>
-        <% } %>
+        <!-- Option 2: 50€ -->
+        <div class="price-card featured gsap-card">
+          <div class="price-badge">Ciné-Dîner</div>
+          <div class="price-amount">50<span>€</span></div>
+          <div class="price-label">par personne</div>
+          <h3 class="price-name">Formule Complète</h3>
+          <ul class="price-includes">
+            <li>Projection du film « La vie est belle »</li>
+            <li>Soutien au projet de Maluku</li>
+            <li>Rencontre avec Nsona Mvuemba</li>
+            <li><strong>Repas complet (Poulet à la Moambe)</strong></li>
+          </ul>
+          <% if (!soldOut) { %>
+            <a href="/inscription?type=50" class="btn btn--primary btn--full">S'inscrire (50€)</a>
+          <% } else { %>
+            <button class="btn btn--secondary btn--full" disabled>Complet</button>
+          <% } %>
+        </div>
       </div>
+      <% if (placesRemaining > 0) { %>
+        <p class="places-left-text gsap-card" style="text-align: center; margin-top: var(--space-lg); color: var(--text-muted);">Il ne reste que <strong><%= placesRemaining %> places</strong> disponibles au total.</p>
+      <% } %>
     </div>
   </section>
 

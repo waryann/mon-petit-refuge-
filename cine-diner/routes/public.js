@@ -16,6 +16,7 @@ router.get('/', (req, res) => {
 
 // Registration form
 router.get('/inscription', (req, res) => {
+  const ticketType = req.query.type === '25' ? 25 : 50;
   const placesRemaining = getPlacesRemaining();
 
   if (placesRemaining <= 0) {
@@ -29,7 +30,7 @@ router.get('/inscription', (req, res) => {
 
   res.render('register', {
     placesRemaining,
-    pricePerPerson: 50,
+    pricePerPerson: ticketType,
     error: null
   });
 });

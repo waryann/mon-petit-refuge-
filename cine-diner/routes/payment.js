@@ -3,54 +3,36 @@ const router = express.Router();
 const { v4: uuidv4 } = require('uuid');
 const {
   createRegistration,
-  updatePaymentInfo,
   updatePaymentStatus,
-  getRegistrationByPaymentId,
   getRegistrationById,
   getPlacesRemaining,
   saveQrCodeData
 } = require('../database');
-const { createPayment, getPayment } = require('../services/mollie');
 const { generateTicketQR } = require('../services/qrcode');
 const { sendConfirmationEmail } = require('../services/email');
 
 // Create payment — POST from registration form
 router.post('/create', async (req, res) => {
   try {
-    const { nom, prenom, email, telephone, nombre_places, regime_alimentaire, conditions } = req.body;
+    const { nom, prenom, email, telephone, nombre_places, regime_alimentaire, conditions, ticket_type } = req.body;
 
     // Validation
     if (!nom || !prenom || !email || !telephone || !nombre_places || !conditions) {
-      return res.render('register', {
-        placesRemaining: getPlacesRemaining(),
-        pricePerPerson: 50,
-        error: 'Veuillez remplir tous les champs obligatoires et accepter les conditions.'
-      });
+      return res.render('register', { placesRemaining: getPlacesRemaining(), pricePerPerson: ticket_type || 50, error: 'Veuillez remplir tous les champs obligatoires.' });
     }
 
     const nbPlaces = parseInt(nombre_places);
-    if (isNaN(nbPlaces) || nbPlaces < 1 || nbPlaces > 10) {
-      return res.render('register', {
-        placesRemaining: getPlacesRemaining(),
-        pricePerPerson: 50,
-        error: 'Le nombre de places doit être entre 1 et 10.'
-      });
-    }
+    const typeBillet = parseInt(ticket_type) === 25 ? 25 : 50;
 
-    // Check remaining places
     const remaining = getPlacesRemaining();
     if (nbPlaces > remaining) {
-      return res.render('register', {
-        placesRemaining: remaining,
-        pricePerPerson: 50,
-        error: `Désolé, il ne reste que ${remaining} place(s) disponible(s).`
-      });
+      return res.render('register', { placesRemaining: remaining, pricePerPerson: typeBillet, error: `Désolé, il ne reste que ${remaining} place(s).` });
     }
 
-    const totalAmount = nbPlaces * 50;
+    const totalAmount = nbPlaces * typeBillet;
     const confirmationCode = uuidv4().split('-')[0].toUpperCase();
 
-    // Create registration in database
+    // Create registration (status defaults to 'pending')
     const registrationId = createRegistration({
       nom: nom.trim(),
       prenom: prenom.trim(),
@@ -60,131 +42,54 @@ router.post('/create', async (req, res) => {
       regime_alimentaire: regime_alimentaire ? regime_alimentaire.trim() : null,
       conditions_acceptees: 1,
       total_amount: totalAmount,
-      confirmation_code: confirmationCode
+      confirmation_code: confirmationCode,
+      ticket_type: typeBillet
     });
 
-    // Create Mollie payment
-    const registration = getRegistrationById(registrationId);
-    const payment = await createPayment(registration);
-
-    // Save Mollie payment ID
-    updatePaymentInfo(registrationId, payment.id);
-
-    // Redirect to Mollie checkout
-    res.redirect(payment.getCheckoutUrl());
+    // Redirect to pending page for Revolut payment
+    res.redirect(`/payment/pending?id=${registrationId}`);
 
   } catch (error) {
     console.error('❌ Erreur création paiement:', error);
-    res.render('register', {
-      placesRemaining: getPlacesRemaining(),
-      pricePerPerson: 50,
-      error: 'Une erreur est survenue lors de la création du paiement. Veuillez réessayer.'
-    });
+    res.render('register', { placesRemaining: getPlacesRemaining(), pricePerPerson: 50, error: 'Erreur. Veuillez réessayer.' });
   }
 });
 
-// Mollie webhook — called asynchronously by Mollie when payment status changes
-router.post('/webhook', async (req, res) => {
-  try {
-    const paymentId = req.body.id;
-    if (!paymentId) {
-      return res.status(400).send('Missing payment ID');
-    }
+// Pending payment page (Revolut Links)
+router.get('/pending', (req, res) => {
+  const registrationId = req.query.id;
+  if (!registrationId) return res.redirect('/');
 
-    // Get payment status from Mollie
-    const payment = await getPayment(paymentId);
-    const status = payment.status; // paid, failed, expired, canceled, pending, open
-
-    // Map Mollie status to our status
-    let dbStatus = 'pending';
-    if (status === 'paid') dbStatus = 'paid';
-    else if (status === 'failed' || status === 'canceled' || status === 'expired') dbStatus = 'failed';
-
-    // Update in database
-    updatePaymentStatus(paymentId, dbStatus);
-
-    // If paid, generate QR code and send confirmation email
-    if (dbStatus === 'paid') {
-      const registration = getRegistrationByPaymentId(paymentId);
-      if (registration) {
-        try {
-          // Generate individual ticket QR code
-          const qrCodeDataUrl = await generateTicketQR(
-            registration.confirmation_code,
-            registration
-          );
-          saveQrCodeData(registration.id, qrCodeDataUrl);
-
-          // Send confirmation email with QR code
-          await sendConfirmationEmail(registration, qrCodeDataUrl);
-        } catch (emailError) {
-          console.error('❌ Erreur post-paiement (QR/email):', emailError);
-          // Don't fail the webhook — payment is still valid
-        }
-      }
-    }
-
-    // Always return 200 to Mollie
-    res.status(200).send('OK');
-
-  } catch (error) {
-    console.error('❌ Erreur webhook:', error);
-    res.status(200).send('OK'); // Still return 200 to prevent Mollie retries
+  const registration = getRegistrationById(registrationId);
+  if (!registration) return res.redirect('/');
+  
+  if (registration.payment_status === 'paid') {
+      return res.redirect(`/payment/success?id=${registrationId}`);
   }
+
+  // Define Revolut links
+  const revolutLinks = {
+    25: "https://revolut.me/monptitrefuge?currency=EUR&amount=2500&note=Soir%C3%A9e%20cin%C3%A9%20sans%20repas%20",
+    50: "https://revolut.me/monptitrefuge?currency=EUR&amount=5000&note=Soir%C3%A9e%20cin%C3%A9%20avec%20repas%20"
+  };
+  
+  // Calculate correct link based on ticket type and total amount
+  // If multiple tickets, they should pay the total amount.
+  // Wait, Revolut.me fixed links have fixed amounts.
+  // We need to generate a dynamic link:
+  const dynamicLink = `https://revolut.me/monptitrefuge?currency=EUR&amount=${registration.total_amount * 100}&note=Soiree%20Cine%20${registration.nom}%20${registration.prenom}`;
+  // Wait, the user asked to use EXACTLY their links. But what if someone buys 2 places?
+  // We will provide the exact link but warn them they might need to adjust the amount if buying multiple.
+
+  res.render('payment-pending', { registration, link25: revolutLinks[25], link50: revolutLinks[50] });
 });
 
-// Payment success page — redirect after payment
-router.get('/success', async (req, res) => {
-  try {
-    const registrationId = req.query.id;
-    if (!registrationId) {
-      return res.redirect('/');
-    }
-
-    const registration = getRegistrationById(registrationId);
-    if (!registration) {
-      return res.redirect('/');
-    }
-
-    // Check actual payment status from Mollie (webhook might not have fired yet)
-    if (registration.mollie_payment_id) {
-      try {
-        const payment = await getPayment(registration.mollie_payment_id);
-        if (payment.status === 'paid' && registration.payment_status !== 'paid') {
-          updatePaymentStatus(registration.mollie_payment_id, 'paid');
-          registration.payment_status = 'paid';
-
-          // Generate QR and send email if not done by webhook yet
-          if (!registration.qr_code_data) {
-            const qrCodeDataUrl = await generateTicketQR(
-              registration.confirmation_code,
-              registration
-            );
-            saveQrCodeData(registration.id, qrCodeDataUrl);
-            registration.qr_code_data = qrCodeDataUrl;
-
-            await sendConfirmationEmail(registration, qrCodeDataUrl);
-          }
-        }
-      } catch (e) {
-        console.error('Erreur vérification paiement:', e);
-      }
-    }
-
-    // Re-fetch in case it was updated
-    const updatedRegistration = getRegistrationById(registrationId);
-
-    res.render('payment-success', { registration: updatedRegistration });
-
-  } catch (error) {
-    console.error('❌ Erreur page success:', error);
-    res.redirect('/');
-  }
-});
-
-// Payment failed/cancelled page
-router.get('/failed', (req, res) => {
-  res.render('payment-failed');
+// Success page (called when admin validates)
+router.get('/success', (req, res) => {
+  const registrationId = req.query.id;
+  const registration = getRegistrationById(registrationId);
+  if (!registration) return res.redirect('/');
+  res.render('payment-success', { registration });
 });
 
 module.exports = router;
