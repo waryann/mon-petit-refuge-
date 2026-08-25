@@ -90,3 +90,32 @@ router.get('/export/csv', requireAdmin, (req, res) => {
 });
 
 module.exports = router;
+
+// Validate a pending payment manually
+router.post('/validate/:id', requireAdmin, async (req, res) => {
+  try {
+    const { updatePaymentStatus, getRegistrationById, saveQrCodeData } = require('../database');
+    const { generateTicketQR } = require('../services/qrcode');
+    const { sendConfirmationEmail } = require('../services/email');
+    
+    const registrationId = req.params.id;
+    const registration = getRegistrationById(registrationId);
+    
+    if (registration && registration.payment_status === 'pending') {
+      updatePaymentStatus(registration.id, 'paid');
+      registration.payment_status = 'paid';
+      
+      if (!registration.qr_code_data) {
+        const qrCodeDataUrl = await generateTicketQR(registration.confirmation_code, registration);
+        saveQrCodeData(registration.id, qrCodeDataUrl);
+        registration.qr_code_data = qrCodeDataUrl;
+        
+        await sendConfirmationEmail(registration, qrCodeDataUrl);
+      }
+    }
+    res.redirect('/admin/dashboard');
+  } catch (error) {
+    console.error('Erreur validation manuelle:', error);
+    res.redirect('/admin/dashboard');
+  }
+});
