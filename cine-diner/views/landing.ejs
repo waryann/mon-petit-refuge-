@@ -23,21 +23,55 @@
     <div class="hero__overlay"></div>
 
     <div class="hero__content">
-
       <div class="hero__text-content">
-        <span class="hero__badge gsap-hero-reveal">🎬 Événement exclusif</span>
+        <span class="hero__badge gsap-hero-reveal">🎬 Projection caritative</span>
         <h1 class="hero__title gsap-hero-title">Soirée Ciné-Dîner</h1>
         <p class="hero__subtitle gsap-hero-reveal">« La vie est belle »</p>
-        <p class="hero__date gsap-hero-reveal">
-          <strong>Samedi 26 septembre</strong> · 18h00 – 22h00
-        </p>
-        <% if (soldOut) { %>
-          <div class="places-badge sold-out gsap-hero-reveal">Complet — Plus de places disponibles</div>
-        <% } else { %>
-          <a href="#prix" class="btn btn--primary gsap-hero-reveal" id="cta-register">
-            Voir les tarifs
-          </a>
-        <% } %>
+
+        <div class="hero__flyer-info gsap-hero-reveal">
+          <div class="flyer-row">
+            <div class="flyer-box">
+              <span class="flyer-icon">📅</span>
+              <span>Samedi 26 septembre</span>
+            </div>
+            <div class="flyer-box">
+              <span class="flyer-icon">🕒</span>
+              <span>18h00 - 22h00</span>
+            </div>
+          </div>
+          
+          <div class="flyer-box flyer-box--full">
+            <span class="flyer-icon">📍</span>
+            <span>Brusselbaan 140, 1600 Sint-Pieters-Leeuw</span>
+          </div>
+
+          <div class="flyer-row flyer-prices">
+            <div class="flyer-price-box">
+              <strong class="gold-text">50 €</strong>
+              <span>Formule Complète<br><small>(Avec repas)</small></span>
+            </div>
+            <div class="flyer-price-divider"></div>
+            <div class="flyer-price-box">
+              <strong class="gold-text">25 €</strong>
+              <span>Formule Ciné<br><small>(Sans repas)</small></span>
+            </div>
+          </div>
+
+          <div class="flyer-box flyer-box--full flyer-box--small flyer-box--contact">
+            <span class="flyer-icon">✉️</span>
+            <span>Info : monptitrefuge@gmail.com</span>
+          </div>
+        </div>
+
+        <div class="hero__cta gsap-hero-reveal">
+          <% if (soldOut) { %>
+            <div class="places-badge sold-out">Complet — Plus de places disponibles</div>
+          <% } else { %>
+            <a href="#prix" class="btn btn--primary" id="cta-register">
+              Réserver ma place
+            </a>
+          <% } %>
+        </div>
       </div>
     </div>
   </section>
