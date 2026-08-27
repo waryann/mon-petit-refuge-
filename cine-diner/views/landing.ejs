@@ -36,10 +36,10 @@
             </div>
             <div class="flyer-box">
               <span class="flyer-icon">🕒</span>
-              <span>18h00 - 22h00</span>
+              <span>18h00 – 22h00</span>
             </div>
           </div>
-          
+
           <div class="flyer-box flyer-box--full">
             <span class="flyer-icon">📍</span>
             <span>Brusselbaan 140, 1600 Sint-Pieters-Leeuw</span>
@@ -74,7 +74,35 @@
         </div>
       </div>
     </div>
+
+    <!-- Scroll indicator -->
+    <div class="hero__scroll-hint">
+      <span>Découvrir</span>
+      <div class="scroll-arrow"></div>
+    </div>
   </section>
+
+  <!-- ===== LE FILM ===== -->
+  <section class="film-section" id="film">
+    <div class="container">
+      <div class="film-showcase gsap-card">
+        <div class="film-showcase__poster">
+          <img src="/images/cover.gif" alt="Affiche du film La vie est belle — Papa Wemba">
+          <div class="film-showcase__glow"></div>
+        </div>
+        <div class="film-showcase__info">
+          <span class="film-showcase__label">🎬 Le Film</span>
+          <h2 class="film-showcase__title">La vie est belle</h2>
+          <p class="film-showcase__desc">
+            Le chef-d'œuvre absolu du cinéma congolais ! Suivez les aventures musicales et amoureuses de Papa Wemba dans le Kinshasa des années 80. Un film mythique, drôle et coloré, rythmé par une bande originale légendaire. <em>La vie est belle</em>, à savourer sans modération !
+          </p>
+          <div class="film-showcase__meta">
+            <span>🇨🇩 Cinéma congolais</span>
+            <span>🎵 Bande originale légendaire</span>
+          </div>
+        </div>
+      </div>
+    </div>
   </section>
 
   <!-- ===== DESCRIPTION ===== -->
@@ -91,24 +119,24 @@
           <strong>Papa Wemba</strong>, en tant qu'invitée d'honneur de cette soirée exceptionnelle.
         </p>
       </div>
+    </div>
+  </section>
 
-      <div class="info-grid" style="margin-top: var(--space-2xl);">
-        <!-- Le Film -->
-        <div class="info-card gsap-card" style="display: flex; flex-direction: column; align-items: center; text-align: center;">
-          <img src="/images/cover.gif" alt="Affiche du film La vie est belle" style="max-height: 280px; width: auto; border-radius: var(--radius-sm); margin-bottom: var(--space-md); box-shadow: 0 8px 20px rgba(0,0,0,0.6);">
-          <h3 style="color: var(--color-gold); font-family: var(--font-display); font-size: 1.5rem; margin-bottom: var(--space-sm);">Le Film</h3>
-          <p style="font-size: 0.95rem; color: var(--color-text-secondary); line-height: 1.6;">
-            Le chef-d'œuvre absolu du cinéma congolais ! Suivez les aventures musicales et amoureuses de Papa Wemba dans le Kinshasa des années 80. Un film mythique, drôle et coloré, rythmé par une bande originale légendaire. <em>La vie est belle</em>, à savourer sans modération !
+  <!-- ===== TRAITEUR ===== -->
+  <section class="traiteur-section" id="traiteur">
+    <div class="container">
+      <div class="traiteur-card gsap-card">
+        <div class="traiteur-card__text">
+          <span class="traiteur-card__label">🍽️ Le Repas</span>
+          <h2 class="traiteur-card__title">Une cuisine <span>authentique</span></h2>
+          <p class="traiteur-card__desc">
+            Savourez un délicieux repas préparé avec passion par notre traiteur partenaire.
+            Une cuisine authentique aux saveurs d'Afrique pour sublimer votre soirée cinéma.
           </p>
+          <div class="traiteur-card__badge">Poulet à la Moambe · Formule à 50€</div>
         </div>
-
-        <!-- Le Repas -->
-        <div class="info-card gsap-card" style="display: flex; flex-direction: column; align-items: center; text-align: center; justify-content: center;">
-          <h3 style="color: var(--color-gold); font-family: var(--font-display); font-size: 1.5rem; margin-bottom: var(--space-sm);">Le Repas</h3>
-          <p style="font-size: 0.95rem; color: var(--color-text-secondary); line-height: 1.6; margin-bottom: var(--space-lg);">
-            Dégustez un délicieux repas authentique préparé avec passion par notre traiteur partenaire. Une véritable explosion de saveurs pour accompagner votre soirée ciné !
-          </p>
-          <img src="/images/ker%20nabou.png" alt="Logo Ker Nabou" style="max-height: 140px; width: auto; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.3));">
+        <div class="traiteur-card__logo">
+          <img src="/images/ker%20nabou.png" alt="Logo Ker Nabou — Traiteur partenaire">
         </div>
       </div>
     </div>
@@ -140,7 +168,6 @@
 
         <!-- Option 2: 50€ -->
         <div class="price-card featured gsap-card">
-          
           <div class="price-amount">50<span>€</span></div>
           <div class="price-label">par personne</div>
           <h3 class="price-name">Formule Complète</h3>
