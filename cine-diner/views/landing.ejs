@@ -13,7 +13,7 @@
 </head>
 <body>
 
-  <!-- ===== HERO SECTION ===== -->
+  <!-- ===== HERO / FLYER SECTION ===== -->
   <section class="hero" id="hero">
     <div class="hero__background">
       <img src="/images/hero-bg.png" alt="" class="bg-blur">
@@ -22,10 +22,26 @@
     <div id="tsparticles"></div>
     <div class="hero__overlay"></div>
 
-    <div class="hero__content">
-      <div class="hero__text-content">
+    <!-- Decorative gold corner frames -->
+    <div class="hero__frame hero__frame--tl"></div>
+    <div class="hero__frame hero__frame--tr"></div>
+    <div class="hero__frame hero__frame--bl"></div>
+    <div class="hero__frame hero__frame--br"></div>
+
+    <div class="hero__content hero__content--flyer">
+      <!-- Left column: ASBL branding -->
+      <div class="flyer-left gsap-hero-reveal">
+        <div class="flyer-left__logo-wrap">
+          <img src="/images/hero-bg.png" alt="Logo Mon P'tit Refuge" class="flyer-left__logo">
+        </div>
+        <p class="flyer-left__asbl">ASBL Mon P'tit Refuge</p>
+        <p class="flyer-left__cause">Soutien à la construction d'une maison de quartier à Maluku</p>
+      </div>
+
+      <!-- Right column: Event info -->
+      <div class="flyer-right">
         <span class="hero__badge gsap-hero-reveal">🎬 Projection caritative</span>
-        <h1 class="hero__title gsap-hero-title">Soirée Ciné-Dîner</h1>
+        <h1 class="hero__title gsap-hero-title">Soirée<br>Ciné-Dîner</h1>
         <p class="hero__subtitle gsap-hero-reveal">« La vie est belle »</p>
 
         <div class="hero__flyer-info gsap-hero-reveal">
